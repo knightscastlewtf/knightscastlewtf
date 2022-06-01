@@ -46,14 +46,6 @@ export const connect = () => {
     });
     const abi = await abiResponse.json();
 
-    const abiWethResponse = await fetch("config/abiWeth.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    const abiWeth = await abiWethResponse.json();
-
     const configResponse = await fetch("config/config.json", {
       headers: {
         "Content-Type": "application/json",
@@ -78,15 +70,11 @@ export const connect = () => {
             abi,
             CONFIG.CONTRACT_ADDRESS
           );
-          const SmartContractObjWeth = new Web3EthContract(
-            abiWeth,
-            CONFIG.CONTRACT_ADDRESS_WETH
-          );
+
           dispatch(
             connectSuccess({
               account: accounts[0],
               smartContract: SmartContractObj,
-              smartContractWeth: SmartContractObjWeth,
               web3: web3,
             })
           );
@@ -121,14 +109,6 @@ export const connectCoinbase = () => {
     });
     const abi = await abiResponse.json();
 
-    const abiWethResponse = await fetch("config/abiWeth.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    const abiWeth = await abiWethResponse.json();
-
     const configResponse = await fetch("config/config.json", {
       headers: {
         "Content-Type": "application/json",
@@ -160,16 +140,12 @@ export const connectCoinbase = () => {
           abi,
           CONFIG.CONTRACT_ADDRESS
         );
-        const SmartContractObjWeth = new Web3EthContract(
-          abiWeth,
-          CONFIG.CONTRACT_ADDRESS_WETH
-        );
+
         console.log("Instantiated Web3EthContract object");
         dispatch(
           connectSuccess({
             account: accounts[0],
             smartContract: SmartContractObj,
-            smartContractWeth: SmartContractObjWeth,
             web3: web3,
           })
         );

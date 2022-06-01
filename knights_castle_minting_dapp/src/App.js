@@ -220,6 +220,22 @@ function App() {
         <s.SpacerSmall />
 
         <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
+        <s.SpacerSmall />
+        
+        <s.Container ai={"center"} jc={"center"} fd={"row"}>
+          <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
+                      <StyledButton
+                        disabled={claimingFreeNft ? 1 : 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          claimFreeNFTs();
+                          getData();
+                        }}
+                      >
+                        {claimingFreeNft ? "BUSY" : "FREE MINT"}
+                      </StyledButton>
+                    </s.Container>
+
 
         <ResponsiveWrapper src={"./config/images/SiteBox.png"} flex={1} style={{ padding: 24 }} test>
           <s.SpacerLarge />
