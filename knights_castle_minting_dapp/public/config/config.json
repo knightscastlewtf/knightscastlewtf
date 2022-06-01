@@ -1,0 +1,16 @@
+{
+  "CONTRACT_ADDRESS": "0x0b9524E6eB08356f7A5676203A8563d770fe14Fd",
+  "SCAN_LINK": "https://rinkeby.etherscan.io/address/0x0b9524E6eB08356f7A5676203A8563d770fe14Fd",
+  "NETWORK": {
+    "NAME": "Rinkeby",
+    "SYMBOL": "ETH",
+    "ID": 4
+  },
+  "NFT_NAME": "Knights Castle WTF",
+  "SYMBOL": "KNIGHTS",
+  "MAX_SUPPLY": 10,
+  "GAS_LIMIT": 300000,
+  "MARKETPLACE": "Opeansea",
+  "MARKETPLACE_LINK": "https://opensea.io/collection/knightscastlewtf",
+  "SHOW_BACKGROUND": true
+}
