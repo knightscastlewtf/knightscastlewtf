@@ -145,7 +145,7 @@ function App() {
     setFeedback(`Minting your free ${CONFIG.NFT_NAME}...`);
     setClaimingFreeNft(true);
     blockchain.smartContract.methods
-      .freeMint()
+      .knighted(mintAmount)
       .send({
         gasLimit: String(totalGasLimit),
         to: CONFIG.CONTRACT_ADDRESS,
@@ -177,8 +177,8 @@ function App() {
 
   const incrementMintAmount = () => {
     let newMintAmount = mintAmount + 1;
-    if (newMintAmount > 8) {
-      newMintAmount = 8;
+    if (newMintAmount > 10) {
+      newMintAmount = 10;
     }
     setMintAmount(newMintAmount);
   };
@@ -221,7 +221,7 @@ function App() {
 
         <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
         <s.SpacerSmall />
-        
+
         <s.Container ai={"center"} jc={"center"} fd={"row"}>
           <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
                       <StyledButton
