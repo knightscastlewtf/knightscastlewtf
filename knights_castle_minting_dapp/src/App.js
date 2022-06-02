@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { connect, connectCoinbase } from "./redux/blockchain/blockchainActions";
+import { connect } from "./redux/blockchain/blockchainActions";
 import { fetchData } from "./redux/data/dataActions";
 import * as s from "./styles/globalStyles";
 import styled from "styled-components";
@@ -31,6 +31,66 @@ export const StyledButton = styled.button`
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
   }
+`;
+
+export const StyledButtonConnect = styled.button`
+  padding: 10px;
+  border-radius: 50px;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  :active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+  background-image: url(config/images/SiteBoxCnTPeas2.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 100px;
+  width: 200px;
+  background-color: transparent;
+`;
+
+export const StyledButtonBusy = styled.button`
+  padding: 10px;
+  border-radius: 50px;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  :active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+  background-image: url(config/images/SiteBoxCnTConscrip.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 100px;
+  width: 200px;
+  background-color: transparent;
+`;
+
+export const StyledButtonMint = styled.button`
+  padding: 10px;
+  border-radius: 50px;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  :active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+  background-image: url(config/images/SitemMintFree.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 100px;
+  width: 200px;
+  background-color: transparent;
 `;
 
 export const StyledRoundButton = styled.button`
@@ -64,7 +124,7 @@ export const ResponsiveWrapper = styled.div`
   flex-direction: column;
   justify-content: stretched;
   align-items: stretched;
-  width: 40%;
+  width: 43%;
   @media (min-width: 767px) {
     flex-direction: row;
   }
@@ -77,6 +137,15 @@ export const StyledLogo = styled.img`
   }
   transition: width 0.5s;
   transition: height 0.5s;
+`;
+
+export const StyledScroll = styled.img`
+  position: absolute;
+  z-index: 200;
+  right: 3%;
+  top: 10%;
+  background: transparent;
+  width: 35%;
 `;
 
 export const StyledMintButton = styled.img`
@@ -105,65 +174,80 @@ export const StyledImg = styled.img`
 export const StyledLink = styled.a`
   color: var(--secondary);
   text-decoration: none;
+  font-size: 32px;
 `;
 
 function App() {
   const dispatch = useDispatch();
   const blockchain = useSelector((state) => state.blockchain);
   const data = useSelector((state) => state.data);
-  const [claimingNftPublic, setClaimingNftPublic] = useState(false);
-  const [claimingNftPublicWeth, setClaimingNftPublicWeth] = useState(false);
-  const [claimingNftV2Holder, setClaimingNftV2Holder] = useState(false);
-  const [claimingNftV2HolderWeth, setClaimingNftV2HolderWeth] = useState(false);
   const [claimingFreeNft, setClaimingFreeNft] = useState(false);
-  const [feedback, setFeedback] = useState(`Click buy to mint your NFT.`);
+  const [feedback, setFeedback] = useState(``);
   const [mintAmount, setMintAmount] = useState(1);
+  const [partySize, setPartySize] = useState(0);
   const [CONFIG, SET_CONFIG] = useState({
     CONTRACT_ADDRESS: "",
     SCAN_LINK: "",
     NETWORK: {
-      NAME: "Rinkeby",
-      SYMBOL: "ETH",
-      ID: 4,
+      NAME: "Polygon",
+      SYMBOL: "MATIC",
+      ID: 137,
     },
     NFT_NAME: "",
     SYMBOL: "",
     MAX_SUPPLY: 6942,
-    GAS_LIMIT: 0,
     MARKETPLACE: "",
     MARKETPLACE_LINK: "",
     SHOW_BACKGROUND: true,
   });
 
-  const claimFreeNFTs = () => {
-    let cost = 0;
-    let gasLimit = CONFIG.GAS_LIMIT;
+  const getPartySize = async () => {
+
+    let pS = await blockchain.smartContract.methods.party(blockchain.account).call();
+    setPartySize(pS);
+  }
+
+  const claimFreeNFTs = async () => {
     let totalCostWei = String(0);
-    let totalGasLimit = String(gasLimit);
     console.log("FM Cost: ", totalCostWei);
-    console.log("FM Gas limit: ", totalGasLimit);
     setFeedback(`Minting your free ${CONFIG.NFT_NAME}...`);
     setClaimingFreeNft(true);
+
+    await getPartySize();
+    
+    let gasLimitEstimate = await blockchain.smartContract.methods.knighted(mintAmount).estimateGas({from: blockchain.account});
+    console.log({
+      gasLimitEstimate: gasLimitEstimate,
+    });
+
+    let gasPriceEstimate = await blockchain.web3.eth.getGasPrice();
+
+    console.log({
+      resultOfGasPriceEstimate: gasPriceEstimate,
+    });
+
     blockchain.smartContract.methods
       .knighted(mintAmount)
       .send({
-        gasLimit: String(totalGasLimit),
+        gasLimit: String(Math.round(1.2 * gasLimitEstimate)),
+        gasPrice: String(Math.round(1.1 * gasPriceEstimate)),
         to: CONFIG.CONTRACT_ADDRESS,
         from: blockchain.account,
         value: totalCostWei,
       })
       .once("error", (err) => {
         console.log(err);
-        setFeedback("Sorry3, something went wrong please try again later.");
+        setFeedback("Elves are goblins scorched us :*(");
         setClaimingFreeNft(false);
       })
       .then((receipt) => {
         console.log(receipt);
         setFeedback(
-          `Wohoo! You free minted a ${CONFIG.NFT_NAME}! Go visit Opensea.io to view it.`
+          `Huzzah! A new knight joined your party.`
         );
         setClaimingFreeNft(false);
         dispatch(fetchData(blockchain.account));
+        setPartySize(partySize + mintAmount);
       });
   };
 
@@ -175,10 +259,16 @@ function App() {
     setMintAmount(newMintAmount);
   };
 
-  const incrementMintAmount = () => {
+  const incrementMintAmount = async () => {
+    if (partySize == 0 && mintAmount == 1) {
+      await getPartySize();
+    }
     let newMintAmount = mintAmount + 1;
     if (newMintAmount > 10) {
       newMintAmount = 10;
+    }
+    if (newMintAmount + partySize > 10) {
+      newMintAmount = 10 - partySize;
     }
     setMintAmount(newMintAmount);
   };
@@ -210,69 +300,52 @@ function App() {
 
   return (
     <s.Screen>
+
+      <StyledScroll alt={"logo"} src={"./config/images/SiteScroll1.png"} />
+
       <s.Container
         flex={1}
         ai={"center"}
         style={{ padding: 24, backgroundColor: "var(--primary)" }}
-        image={CONFIG.SHOW_BACKGROUND ? "./config/images/bg1.png" : null}
+        image={CONFIG.SHOW_BACKGROUND ? "./config/images/bgRoyMC.png" : null}
       >
         <StyledLogo alt={"logo"} src={"./config/images/LogoTransparent.png"} />
         <s.SpacerSmall />
 
-        <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
-        <s.SpacerSmall />
-
-        <s.Container ai={"center"} jc={"center"} fd={"row"}>
-          <StyledMintButton alt={"mint"} src={"./config/images/SitemMintFree.png"} />
-                      <StyledButton
-                        disabled={claimingFreeNft ? 1 : 0}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          claimFreeNFTs();
-                          getData();
-                        }}
-                      >
-                        {claimingFreeNft ? "BUSY" : "FREE MINT"}
-                      </StyledButton>
-                    </s.Container>
-
-
-        <ResponsiveWrapper src={"./config/images/SiteBox.png"} flex={1} style={{ padding: 24 }} test>
-          <s.SpacerLarge />
+        <ResponsiveWrapper src={"./config/images/SiteBoxTransparent.png"} flex={1} style={{ padding: 0 }} test>
           <s.Container
             flex={2}
             jc={"center"}
             ai={"center"}
             style={{
-              backgroundColor: "var(--accent)",
-              padding: 24,
+              padding: 0,
               borderRadius: 24,
-              border: "4px dashed var(--secondary)",
-              boxShadow: "0px 5px 11px 2px rgba(0,0,0,0.7)",
+              border: "4px var(--secondary)",
             }}
+            image={"./config/images/SiteBox.png"}
           >
+            <s.SpacerSmall />
             <s.TextTitle
               style={{
                 textAlign: "center",
-                fontSize: 50,
+                fontSize: 42,
                 fontWeight: "bold",
-                color: "var(--accent-text)",
+                color: "var(--primary-text)",
               }}
             >
               {data.totalSupply} / {CONFIG.MAX_SUPPLY}
             </s.TextTitle>
-            <s.SpacerSmall />
             {Number(data.totalSupply) >= CONFIG.MAX_SUPPLY ? (
               <>
                 <s.TextTitle
-                  style={{ textAlign: "center", color: "var(--accent-text)" }}
+                  style={{ textAlign: "center", color: "var(--primary-text)", fontSize: 20, paddingLeft: 50, paddingRight: 50, }}
                 >
-                  The sale has ended.
+                  Huzzah! That's enough conscripts to fight the foul beasts.
                 </s.TextTitle>
                 <s.TextDescription
-                  style={{ textAlign: "center", color: "var(--accent-text)" }}
+                  style={{ textAlign: "center", color: "var(--primary-text)", fontSize: 20, paddingLeft: 50, paddingRight: 50, }}
                 >
-                  You can still find {CONFIG.NFT_NAME} on
+                  To hire a knight, gaze into yonder
                 </s.TextDescription>
                 <s.SpacerSmall />
                 <StyledLink target={"_blank"} href={CONFIG.MARKETPLACE_LINK}>
@@ -280,116 +353,135 @@ function App() {
                 </StyledLink>
               </>
             ) : (
+
               <>
-                    <s.Container ai={"center"} jc={"center"} fd={"row"}>
-                      <StyledButton
-                        disabled={claimingFreeNft ? 1 : 0}
-                        onClick={(e) => {
+                <s.Container ai={"center"} jc={"center"} >
+
+                  {blockchain.account === "" ||
+                    blockchain.smartContract === null ? (
+                      <s.Container ai={"center"} jc={"center"}>
+                   
+                        <StyledButtonConnect src={"./config/images/SiteCntMetaM.png"}
+                          onClick={(e) => {
                           e.preventDefault();
-                          claimFreeNFTs();
+                          dispatch(connect());
                           getData();
-                        }}
-                      >
-                        {claimingFreeNft ? "BUSY" : "FREE MINT"}
-                      </StyledButton>
-                    </s.Container>
-                    <s.SpacerSmall />
-                <s.SpacerXSmall />
+                          setFeedback(``);
+                          }}
+                        >
+                        </StyledButtonConnect>
 
-                    <s.SpacerSmall />
-                <s.SpacerXSmall />
-                
-                    <s.SpacerSmall />
-                <s.SpacerXSmall />
+                        {blockchain.errorMsg !== "" ? (
+                        <>
+                          <s.SpacerSmall />
+                          <s.TextDescription
+                            style={{
+                              textAlign: "center",
+                              color: "var(--primary-text)",
+                            }}
+                          >
+                          {blockchain.errorMsg}
+                          </s.TextDescription>
+                        </>
+                        ) : null}
+                      </s.Container>
+                    ) : (
+                    <>
 
-                <s.SpacerSmall />
-                {blockchain.account === "" ||
-                blockchain.smartContract === null ? (
-                  <s.Container ai={"center"} jc={"center"}>
-                    <s.TextDescription
-                      style={{
-                        textAlign: "center",
-                        color: "var(--accent-text)",
-                      }}
-                    >
-                      Connect to the {CONFIG.NETWORK.NAME} network
-                    </s.TextDescription>
-                    <s.SpacerSmall />
-                    <StyledButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(connect());
-                        getData();
-                      }}
-                    >
-                      CONNECT (METAMASK)
-                    </StyledButton>
-
-                    {blockchain.errorMsg !== "" ? (
-                      <>
-                        <s.SpacerSmall />
+                      <s.Container ai={"center"} jc={"center"} fd={"row"}>
+                        <StyledRoundButton
+                          style={{ lineHeight: 0.4 }}
+                          disabled={claimingFreeNft ? 1 : 0}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            decrementMintAmount();
+                          }}
+                        >
+                        -
+                        </StyledRoundButton>
+                        <s.SpacerMedium />
                         <s.TextDescription
                           style={{
                             textAlign: "center",
                             color: "var(--accent-text)",
                           }}
                         >
-                          {blockchain.errorMsg}
-                        </s.TextDescription>
-                      </>
-                    ) : null}
-                  </s.Container>
-                ) : (
-                  <>
-                    <s.TextDescription
-                      style={{
-                        textAlign: "center",
-                        color: "var(--accent-text)",
-                      }}
-                    >
-                      {feedback}
-                    </s.TextDescription>
-                    <s.SpacerMedium />
-                    <s.Container ai={"center"} jc={"center"} fd={"row"}>
-                      <StyledRoundButton
-                        style={{ lineHeight: 0.4 }}
-                        disabled={claimingNftPublic ? 1 : 0}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          decrementMintAmount();
-                        }}
-                      >
-                        -
-                      </StyledRoundButton>
-                      <s.SpacerMedium />
-                      <s.TextDescription
-                        style={{
-                          textAlign: "center",
-                          color: "var(--accent-text)",
-                        }}
-                      >
                         {mintAmount}
-                      </s.TextDescription>
-                      <s.SpacerMedium />
-                      <StyledRoundButton
-                        disabled={claimingNftPublic ? 1 : 0}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          incrementMintAmount();
-                        }}
-                      >
+                        </s.TextDescription>
+                        <s.SpacerMedium />
+                        <StyledRoundButton
+                          disabled={claimingFreeNft ? 1 : 0}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            incrementMintAmount();
+                          }}
+                        >
                         +
-                      </StyledRoundButton>
-                    </s.Container>
-                    <s.SpacerSmall />
-                    <s.SpacerSmall />
-                  </>
-                )}
+                        </StyledRoundButton>
+                      </s.Container>
+
+                      <s.SpacerSmall />
+                          <s.TextDescription
+                            style={{
+                              textAlign: "center",
+                              color: "var(--primary-text)",
+                            }}
+                          >
+                          </s.TextDescription>
+
+                      <s.Container ai={"center"} jc={"center"} >
+                        {claimingFreeNft === false ? (
+                            <>
+                              <StyledButtonMint
+                                disabled={claimingFreeNft ? 1 : 0}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  claimFreeNFTs();
+                                  getData();
+                                }}
+                              >
+                              </StyledButtonMint>
+                            </>
+                          ) : (
+                            <>
+                              <StyledButtonBusy
+                                disabled={1}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  claimFreeNFTs();
+                                  getData();
+                                }}
+                              >
+                          
+                              </StyledButtonBusy>
+                            </>
+                          )
+                        }
+                      </s.Container>
+                    </>
+                    )
+                  }
+                </s.Container>
+                <s.TextDescription
+                  style={{
+                    textAlign: "center",
+                    color: "var(--primary-text)",
+                    fontSize: 28,
+                    paddingLeft: 50,
+                    paddingRight: 50,
+                  }}
+                >
+                {feedback}
+                </s.TextDescription>
+                <s.SpacerLarge />
+                 
+                
               </>
             )}
-            <s.SpacerMedium />
+
           </s.Container>
           <s.SpacerLarge />
+          <s.SpacerMedium />
         </ResponsiveWrapper>
       </s.Container>
     </s.Screen>
