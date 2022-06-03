@@ -337,7 +337,7 @@ function App() {
         </FadeIn>
         <s.SpacerSmall />
         
-            <ResponsiveWrapper flex={1} style={{ padding: 0, margin: 0,  }} test>
+            {/* <ResponsiveWrapper flex={1} style={{ padding: 0, margin: 0,  }} test>
               
               <FadeIn delay={"1000"}>
                 <s.Container
@@ -420,7 +420,7 @@ function App() {
                           ) : (
                           <>
 
-                            {/* <s.Container ai={"center"} jc={"center"} fd={"row"}>
+                            <s.Container ai={"center"} jc={"center"} fd={"row"}>
                               <StyledRoundButton
                                 style={{ lineHeight: 0.4 }}
                                 disabled={claimingFreeNft ? 1 : 0}
@@ -450,7 +450,7 @@ function App() {
                               >
                               +
                               </StyledRoundButton>
-                            </s.Container> */}
+                            </s.Container>
 
                             <s.SpacerSmall />
                                 <s.TextDescription
@@ -460,7 +460,7 @@ function App() {
                                   }}
                                 >
                                 </s.TextDescription>
-                            {/* {partySize < 1 ? (
+                            {partySize < 1 ? (
                                 <s.Container ai={"center"} jc={"center"} >
                                 {claimingFreeNft === false ? (
                                     <>
@@ -499,7 +499,7 @@ function App() {
                                 >
                                   Fellowship achieved. To collect more, visit opensea.
                                 </s.TextDescription>
-                            )} */}
+                            )}
                           </>
                           )
                         }
@@ -524,7 +524,7 @@ function App() {
                 </s.Container>
               </FadeIn>
               
-            </ResponsiveWrapper>
+            </ResponsiveWrapper> */}
           
       </s.Container>
     </s.Screen>
