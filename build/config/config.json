@@ -1,0 +1,15 @@
+{
+  "CONTRACT_ADDRESS": "0x9155487dD5643e81659aB7D1F5980d11FE45BBB6",
+  "SCAN_LINK": "https://polygonscan.com/address/0x9155487dD5643e81659aB7D1F5980d11FE45BBB6",
+  "NETWORK": {
+    "NAME": "Polygon",
+    "SYMBOL": "MATIC",
+    "ID": 137
+  },
+  "NFT_NAME": "Knights Castle WTF",
+  "SYMBOL": "KNIGHTS",
+  "MAX_SUPPLY": 6942,
+  "MARKETPLACE": "Opeansea",
+  "MARKETPLACE_LINK": "https://opensea.io/collection/knightscastlewtf",
+  "SHOW_BACKGROUND": true
+}
