@@ -460,7 +460,7 @@ function App() {
                                   }}
                                 >
                                 </s.TextDescription>
-                            {partySize < 1 ? (
+                            {/* {partySize < 1 ? (
                                 <s.Container ai={"center"} jc={"center"} >
                                 {claimingFreeNft === false ? (
                                     <>
@@ -499,7 +499,7 @@ function App() {
                                 >
                                   Fellowship achieved. To collect more, visit opensea.
                                 </s.TextDescription>
-                            )}
+                            )} */}
                           </>
                           )
                         }
