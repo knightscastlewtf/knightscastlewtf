@@ -280,8 +280,8 @@ function App() {
     if (newMintAmount > 10) {
       newMintAmount = 10;
     }
-    if (newMintAmount + partySize > 1) {
-      newMintAmount = 1 - partySize;
+    if (newMintAmount + partySize > 2) {
+      newMintAmount = 2 - partySize;
     }
     setMintAmount(newMintAmount);
   };
