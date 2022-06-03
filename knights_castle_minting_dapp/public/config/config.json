@@ -1,10 +1,10 @@
 {
-  "CONTRACT_ADDRESS": "0x9155487dD5643e81659aB7D1F5980d11FE45BBB6",
-  "SCAN_LINK": "https://polygonscan.com/address/0x9155487dD5643e81659aB7D1F5980d11FE45BBB6",
+  "CONTRACT_ADDRESS": "0x7305c03F5b449dA4Bdc47fbaaB3eb8510493132C",
+  "SCAN_LINK": "https://etherscan.io/address/0x7305c03F5b449dA4Bdc47fbaaB3eb8510493132C",
   "NETWORK": {
-    "NAME": "Polygon",
-    "SYMBOL": "MATIC",
-    "ID": 137
+    "NAME": "Ethereum Mainnet",
+    "SYMBOL": "ETH",
+    "ID": 1
   },
   "NFT_NAME": "Knights Castle WTF",
   "SYMBOL": "KNIGHTS",

@@ -337,7 +337,7 @@ function App() {
         </FadeIn>
         <s.SpacerSmall />
         
-            {/* <ResponsiveWrapper flex={1} style={{ padding: 0, margin: 0,  }} test>
+            <ResponsiveWrapper flex={1} style={{ padding: 0, margin: 0,  }} test>
               
               <FadeIn delay={"1000"}>
                 <s.Container
@@ -524,7 +524,7 @@ function App() {
                 </s.Container>
               </FadeIn>
               
-            </ResponsiveWrapper> */}
+            </ResponsiveWrapper>
           
       </s.Container>
     </s.Screen>
